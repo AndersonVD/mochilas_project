@@ -1,6 +1,6 @@
-from fastapi import FastAPI, middleware
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from adidas_spider import adidas_spider
+from app.adidas_spider import adidas_spider
 
 app = FastAPI(
     title="Verificador De Mochilinhas ",
@@ -8,6 +8,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/",
 )
+
 
 app.add_middleware(
     CORSMiddleware,
