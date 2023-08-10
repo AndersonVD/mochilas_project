@@ -13,15 +13,19 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copiar o diretório do aplicativo
 COPY ./app ./app
 
-# Etapa 2: Definir variáveis de ambiente e instalar ferramentas adicionais
-FROM builder as dev-envs
+# Etapa 2: Definir variáveis de ambiente
+ENV LOGLEVEL="info"
+ENV WORKERS=8
+ENV BIND="0.0.0.0:10000"
+ENV GRACEFUL_TIMEOUT=120
+ENV TIMEOUT=120
+ENV KEEPALIVE=5
+ENV ERRORLOG="-"
+ENV ACCESSLOG="-"
+ENV WORKERS_PER_CORE=1.0
+ENV USE_MAX_WORKERS="null"
+ENV HOST="0.0.0.0"
+ENV PORT="10000"
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git
-
-RUN useradd -s /bin/bash -m vscode \
-    && groupadd docker \
-    && usermod -aG docker vscode
-
-# Etapa 3: Copiar ferramentas do Docker (CLI, buildx, compose)
-COPY --from=gloursdocker/docker / /
+# Etapa 3: Executar o servidor Gunicorn
+CMD ["gunicorn", "app.main:app", "--log-level", "$LOGLEVEL", "-w", "$WORKERS", "-b", "$BIND", "--graceful-timeout", "$GRACEFUL_TIMEOUT", "--timeout", "$TIMEOUT", "--keep-alive", "$KEEPALIVE", "--error-logfile", "$ERRORLOG", "--access-logfile", "$ACCESSLOG", "--workers-per-core", "$WORKERS_PER_CORE", "--use-max-workers", "$USE_MAX_WORKERS"]
