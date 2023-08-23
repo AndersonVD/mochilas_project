@@ -3,6 +3,7 @@ import json
 import asyncio
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_sync
+import requests
 
 BASE_URL = "https://www.nike.com.br"
 url = "https://www.nike.com.br/nav/categorias/bolsasmochilas/genero/masculino/idade/adulto/tipodebolsasmochilas/mochilas/tipodeproduto/acessorios"
@@ -17,16 +18,17 @@ headers = {
 # run playwright install chromium
 async def nike_spider():
     try:
-        p = await async_playwright().start()
-        browser = await p.chromium.launch()
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4454.0 Safari/537.36"
-        )
-        page = await context.new_page()
-        stealth_sync(page)
-        await page.goto(url)
-        soup = BeautifulSoup(await page.content(), "html.parser")
-        await browser.close()
+        # p = await async_playwright().start()
+        # browser = await p.chromium.launch()
+        # context = await browser.new_context(
+        #     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4454.0 Safari/537.36"
+        # )
+        # page = await context.new_page()
+        # stealth_sync(page)
+        # await page.goto(url)
+        page = requests.get(url, headers=headers)
+        soup = BeautifulSoup(page.content, "html.parser")
+        # await browser.close()
 
         backpack = []
 
