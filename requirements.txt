@@ -3,3 +3,5 @@ fastapi
 requests
 uvicorn
 httpx
+playwright
+playwright_stealth
