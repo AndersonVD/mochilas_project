@@ -21,4 +21,5 @@ app.add_middleware(
 
 @app.get("/api/v1/backpack")
 async def get_backpack_data():
-    return await nike_spider()
+    dados = await nike_spider()
+    return dados
