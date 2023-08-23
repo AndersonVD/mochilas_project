@@ -7,7 +7,7 @@ url = "https://www.nike.com.br/nav/categorias/bolsasmochilas/genero/masculino/id
 IMAGE_URL = "https://imgnike-a.akamaihd.net/1200x1200/{}.jpg"
 
 headers = {
-    "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4454.0 Safari/537.36",
     "accept-language": "en-US,en;q=0.5",  # Defina o idioma de preferência
 }
 
@@ -23,9 +23,9 @@ async def nike_spider():
 
             data = soup.find("script", {"id": "__NEXT_DATA__"}).contents[0]
             data = json.loads(data)
-            products = data["props"]["pageProps"]["dehydratedState"]["queries"][0]["state"][
-                "data"
-            ]["pages"][0]["products"]
+            products = data["props"]["pageProps"]["dehydratedState"]["queries"][0][
+                "state"
+            ]["data"]["pages"][0]["products"]
 
             for product in products:
                 backpack.append(
@@ -41,7 +41,7 @@ async def nike_spider():
 
         except httpx.RequestError as e:
             print(f"Erro na requisição: {e}")
-            return ["Erro na requisição"]
+            return {"Erro na requisição": e}
 
 
 if __name__ == "__main__":
