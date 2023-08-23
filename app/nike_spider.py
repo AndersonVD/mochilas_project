@@ -1,6 +1,7 @@
-import httpx
 from bs4 import BeautifulSoup
 import json
+from playwright.sync_api import sync_playwright
+from playwright_stealth import stealth_sync
 
 BASE_URL = "https://www.nike.com.br"
 url = "https://www.nike.com.br/nav/categorias/bolsasmochilas/genero/masculino/idade/adulto/tipodebolsasmochilas/mochilas/tipodeproduto/acessorios"
@@ -12,12 +13,18 @@ headers = {
 }
 
 
+# run playwright install chromium
 async def nike_spider():
-    async with httpx.AsyncClient() as client:
+    with sync_playwright() as p:
         try:
-            response = await client.get(url, headers=headers)
-            response.raise_for_status()  # Verificar se a resposta é bem-sucedida
-            soup = BeautifulSoup(response.text, "html.parser")
+            browser = p.chromium.launch()
+            context = browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4454.0 Safari/537.36"
+            )
+            page = context.new_page()
+            stealth_sync(page)
+            page.goto(url)
+            soup = BeautifulSoup(page.content(), "html.parser")
 
             backpack = []
 
@@ -38,10 +45,9 @@ async def nike_spider():
                 )
 
             return backpack
-
-        except httpx.RequestError as e:
-            print(f"Erro na requisição: {e}")
-            return {"Erro na requisição": e}
+        except Exception as e:
+            print(e)
+            return {"error": e}
 
 
 if __name__ == "__main__":
