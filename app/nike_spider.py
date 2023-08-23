@@ -18,7 +18,7 @@ headers = {
 async def nike_spider():
     try:
         p = await async_playwright().start()
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch()
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4454.0 Safari/537.36"
         )
